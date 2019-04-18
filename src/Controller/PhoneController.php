@@ -21,7 +21,9 @@ class PhoneController extends AbstractController
     public function show(Phone $phone, PhoneRepository $phoneRepository, SerializerInterface $serializer)
     {
         $phone = $phoneRepository->find($phone->getId());
-        $data = $serializer->serialize($phone, 'json');
+        $data = $serializer->serialize($phone, 'json', [
+            'groups' => ['show']
+        ]);
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);
@@ -38,7 +40,9 @@ class PhoneController extends AbstractController
         }
 
         $phones = $phoneRepository->findAllPhones($page, getenv('LIMIT'));
-        $data = $serializer->serialize($phones, 'json');
+        $data = $serializer->serialize($phones, 'json', [
+            'groups' => ['list']
+        ]);
 
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
