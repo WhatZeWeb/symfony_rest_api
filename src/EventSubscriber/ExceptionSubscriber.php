@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionSubscriber implements EventSubscriberInterface
@@ -17,6 +18,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 'status' => $exception->getStatusCode(),
                 'message' => 'Resource not found'
             ];
+            $response = new JsonResponse($data);
+            $event->setResponse($response);
+        } elseif ($exception instanceof AccessDeniedHttpException) {
+            $data = [
+                'status' => $exception->getStatusCode(),
+                'message' => 'Access denied'
+            ];
+
             $response = new JsonResponse($data);
             $event->setResponse($response);
         }
